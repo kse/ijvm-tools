@@ -1,0 +1,29 @@
+# GCD on Mic1
+
+	H = SP = 1
+	H = SP = SP + H + 1
+	H = SP = SP + H + 1        # SP = 7
+	LV = H + SP
+	LV = LV - 1                # LV = 13
+
+while:                             # while (SP != LV) {
+	H = LV
+        Z = SP - H; if (Z) goto while_end; else goto while_body
+
+WHILE_body:                        #     if (SP < LV)
+	H = LV
+	N = SP - H; if (N) goto A; else goto B
+
+A:
+	H = SP                     #         LV = LV - SP
+	LV = LV - H; goto if_end
+
+B:                                 #     else
+	H = LV                     #         SP = SP - LV
+	SP = SP - H
+
+if_end:                            # }
+	goto while
+
+while_end:
+	halt

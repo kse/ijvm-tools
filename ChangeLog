@@ -1,0 +1,169 @@
+2009-11-13  Christian Storm Pedersen <cstorm@cs.au.dk>
+
+	* ijvm-util.c: Fixed too small allocation of image->cpool.
+
+	* ijvm-util.h: Removed declaration of ijvm_spec
+	
+2000-10-10  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* ijvm-cons.c: Do away with the va_arg constructors and write one
+	for each type of expression/directive.  Also, constructors now
+	take line number as an argument from the parser, since the parser
+	knows what line the thingy is on; the constructor gets it wrong.
+
+	* ijvm-emit.c (jasm_expr_eval): This function now checks for
+	overflow in the expressions, and then we can clean up the mess
+	with lexer states required to parse -0x80000000 (see entry for
+	1999-09-10).
+
+2000-09-12  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* ijvm-spec.c (ijvm_spec_init): New function to determine name of
+	spec file and parse it.
+
+	* ijvm-asm.c (main), ijvm-util.c (ijvm_print_init): Use
+	ijvm_spec_init so that we now support the eagerly anticipated `-f'
+	option. 
+
+	* configure.in: With this new exciting feature we made it to
+	version 0.7.
+
+1999-12-14  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* mic1-cons.c (masm_line_make): Initialise line->laid_out to
+	FALSE. 
+
+1999-12-13  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* mic1-check.c (masm_check_insn): Print warning when referencing
+	an undefined label.  This seems like a good idea...
+
+1999-12-08  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* ijvm-emit.c (jasm_emit): Use ByteStream data structure and
+	IJVMImage functions for emitting the bytecode file.
+
+	* Makefile.am: Quote COMPILE_HOST value in case it's something
+	like "(none)" and use $(shell hostname) for determining it.
+
+	* mic1.c (mic1_cycle): Added MAR range checks when accessing
+	memory.  A write outside the 640kb is ignored; a read returns 0.
+
+	* configure.in: Version 0.6
+
+1999-11-24  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* Makefile.am: Merged in the Mic1 tools and prefixed filenames
+	(ie. ijvm-parse.y etc.).  Also, the C-implementation of the IJVM
+	simulator has been updated to use the utility functions in
+	ijvm-util.c, which doesn't know about the IJVM struct.  In
+	particular, the load code has be removed from ijvm.c, and ijvm.c
+	now uses the IJVMImage-based load code, like the Mic1 simulator.
+
+	Other updates to the IJVM simulator include: use one big chunk of
+	memory for bytecode, constant pool and stack.  Previously these
+	where laid out in seperately allocated areas, but now they are
+	laid out like the Mic1 simulator does.  Also, previously the
+	simulator would initialise new local variables to 0; now the
+	memory chunk is just zeroed out during initialisation.  This way
+	the execution traces from the two simulators are identical, except
+	for the headers.
+
+	* configure.in: Version number jumps to 0.5.  Just like that!
+
+1999-10-28  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* emit.c (jasm_insn_check_operands): Correct spelling error:
+	"numbers of operands" => "number of operands"
+
+1999-10-01  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* lex.l (jasm_lex_label): Test if the label is actually a name of
+	an instruction.
+
+	* emit.c (jasm_insn_check_operands): Added op != NULL to the loop
+	predicate to fix bug reported by jacobfq@daimi.au.dk.
+
+1999-09-30  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* emit.c (jasm_method_check): Fix stupid bug where m iterates
+	through all methods, but the body of the loop works on method.
+
+1999-09-29  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* configure.in: Increase version number to 0.2.  This is a large
+	rewrite, that adds a configuration file feature to the tools.  It
+	is possible to dynamicly specify the set of instructions the
+	assembler accepts and the simulator knows how to print.
+
+	Also, `due to popular demand', a feature has been added to ijvm to
+	make it read bytecode from stdin; specify `-' as the filename.
+	When this is used, input is not available to IJVM programs, and
+	getchar will return -1 (EOF).
+
+1999-09-27  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* print.c (ijvm_print_snapshot): Print second operand of iinc as
+	signed 8 bit value.
+
+	* ijvm.c (ijvm_execute_opcode): Use ijvm_fetch_int8 to fetch
+	second argument to iinc, so it is properly signed extended.
+
+1999-09-22  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* Makefile.am: Add parse.h to distribution.  Previously, the
+	parse.c included in the distribution would get compiled, and later
+	when lex.c was to be compiled bison would be invoked to generate
+	parse.h (since lex.c depends on it).  The token #defines in the
+	newly generated parse.h wouldn't match those used in parse.c,
+	leading to a parse error.
+
+1999-09-20  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* emit.c (jasm_insn_emit): Fix bug reported by
+	cbruun@daimi.au.dk. The code emitted for iinc was the opcode and
+	the varnum as 16 bit integer (should be varnum and byte, 8 bit
+	unsigned and signed respectively).  Replaced the union in JasmInsn
+	with the fields label, expr1, expr2, value1 and value2.  Should do
+	the rewrite to support configuration files.
+	
+1999-09-15  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* ijvm.c (ijvm_invoke_builtin): Test return value from fgetc. If
+	its EOF, make getchar method return -1.
+
+1999-09-10  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* parse.y, lex.l: Check for over- and underflow errors reported by
+	strtol when parsing integer constants and report an error if the
+	integer is out of range.  
+
+	The regular expression matching integer constants started with
+	"-?" and thus "1 - 5" would be parsed as two integer constants, 1
+	and -5.  This was changed, so that "-" is a separate token.  This
+	however conflict with the change above, since "-0x80000000" would
+	get parsed as tokens "-" and "0x8000000", but that is an overflow!
+	I made it work using mid-rule actions telling the lexer when to
+	expect operators and when to expect signs, so that strtol sees
+	"-0x80000000" when it should.  It's ugly and complicated, but it
+	works.
+
+1999-08-06  Kristian Hogsberg Kristensen  <hogsberg@daimi.au.dk>
+
+	* ijvm.c (ijvm_load): Rewrote ijvm_load and ijvm_init to one big
+	function to avoid ugliness with main_index as a global variable.
+	Also, I think this makes more sense, since the IJVM intialisation
+	was arbitrarily divided between ijvm_load and ijvm_init.
+
+	* emit.c (jasm_method_emit): Make number of arguments default to 1
+	(ie. objref) when no .args is specified.
+
+	* parse.y, jasm.h, emit.c, cons.c: Allow general expressions in
+	.args and .locals directives.
+
+	* ijvm.c (main): Print filename, date and time along with
+	execution trace.
+	(ijvm_invoke_virtual): Changed implementation of builtin functions
+	from a table of function pointers to a switch. Also, initialise
+	local variables to 0.
+

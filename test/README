@@ -1,0 +1,21 @@
+IJVM Tools
+----------
+
+The Integer Java Virtual Machine is introduced in Structured Computer
+Organization (Tanenbaum, 1998), section 4.  This package contains an
+assembler and 
+
+The assembler, ijvm-asm,
+translates symbolic IJVM instructions into IJVM bytecode. The bytecode
+produced, in turn, serves as input to the interpreter, ijvm, which
+executes the bytecode and gives a detailed execution trace.
+
+The Mic1 tools consist of an assembler for the Micro Assembly Language
+(MAL) specified in Structured Computer Organization (Tanenbaum, 1998),
+section 4.3.1 and an interpreter for the Mic1 microarchitechture
+specified in section 4.1.
+
+The assembler, mic1-asm, translates a MAL program into a 512 word
+image for the Mic1 control store. The interpreter, mic1, loads this
+control store image and optionally an IJVM bytecode file and then
+simulates the Mic1 machine.

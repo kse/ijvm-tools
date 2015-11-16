@@ -1,0 +1,13 @@
+# rshift only one positions, lshift only 8 positions
+
+TOS = MBR << 5
+TOS = LV >> 2
+
+
+# constants in arithmetic expressions
+
+TOS = MDR + 7
+PC = PC - 5
+OPC = 50
+
+

@@ -1,0 +1,63 @@
+# rd and wr on same line
+
+rd; wr
+wr; rd
+
+
+# several gotos on same line
+
+a: empty
+goto a; goto a
+
+
+# several alu ops on same line
+
+mdr = sp + h + 1; pc = pc + 1
+
+
+# empty only on lines by itself
+
+fetch; empty
+empty; PC = PC + 1
+
+
+# register assigned more than once
+
+PC = PC = SP + 1
+
+
+# MBR and MBRU cant be assigned to
+
+MBR = SP + 1
+MBRU = TOS
+
+
+# assigning to MDR after rd
+
+MAR = SP - 1; rd
+MDR = MBRU << 8
+
+
+# one operand must be H
+
+PC = TOS + SP + 1
+MAR = MBRU + MDR
+MDR = TOS = MDR or OPC
+MAR = MDR and OPC
+
+
+# subtractions
+
+TOS = H - 1
+MAR = LV - TOS
+
+
+# only H can be negated
+
+OPC = - PC
+
+
+# can't assign to MDR following a rd
+
+MAR = SP = SP - 1; rd
+MDR = - H

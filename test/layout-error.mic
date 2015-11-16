@@ -1,0 +1,43 @@
+# absolute label clash
+
+a0 = 0: H = LV
+b0 = 0: MAR = MBRU + H; rd
+
+
+# invalid branch targets
+
+a1 = 1: empty
+b1 = 42: MAR = SP
+if (n) goto a1; else goto b1
+
+
+# low true target
+
+a2 = 2: fetch
+b2: MAR = MBRU
+if (n) goto a2; else goto b2
+
+
+# false branch occupied
+
+a3 = 0x103: MAR = SP = SP - 1
+b3 = 3: empty
+c3: TOS = MDR; if (n) goto a3; else goto c3
+
+
+# high false target
+
+a4: fetch
+b4 = 0x104: MAR = MBRU
+if (n) goto a4; else goto b4
+
+
+# true branch occupied
+
+a5 = 0x105: MAR = SP = SP - 1
+b5 = 5: empty
+c5: TOS = MDR; if (n) goto a5; else goto c5
+
+
+# absolute labels out of range
+a6 = 1000: H = MBRU << 8

@@ -1,0 +1,10 @@
+# Makefile for mini-ijvm
+# ijvm-tools @VERSION@ 
+
+OBJS = ijvm.o ijvm-util.o ijvm-spec.o
+
+ijvm : $(OBJS)
+	gcc -o $@ $(OBJS)
+
+%.o : %.c ijvm-spec.h ijvm-util.h
+	gcc -DIJVM_DATADIR=\"@datadir@\" -c -Wall -O2 $<
